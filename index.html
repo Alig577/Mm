@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>طائرة ورقية وصور متتابعة مع سحب متحركة</title>
+  <title>طائرة ورقية متحركة بسلاسة مع صور وسحب</title>
   <style>
     body, html {
       height: 100%;
@@ -38,34 +38,31 @@
     @keyframes cloudMove3 { 0% { left: -20vw; } 100% { left: 120vw; } }
     @keyframes cloudMove4 { 0% { left: -10vw; } 100% { left: 110vw; } }
 
-    /* الصور */
+    /* الصور مرتبة أفقيًا */
     .scene-img {
       position: absolute;
-      width: 170px;
-      height: 170px;
+      width: 180px;
+      height: 180px;
       object-fit: cover;
       border-radius: 22px;
       border: 4px solid #fff;
       box-shadow: 0 4px 24px #0003;
       z-index: 2;
       background: #eee;
-      opacity: 0;
-      transition: opacity 0.7s;
-      pointer-events: none;
-    }
-    .scene-img.active {
-      opacity: 1;
-      pointer-events: auto;
+      left: 50vw; top: 50vh;
+      transform: translate(-50%, -50%);
+      transition: left 0.3s, top 0.3s;
     }
     /* الطائرة الورقية */
     .kite-img {
       position: absolute;
-      width: 110px;
+      width: 120px;
       height: auto;
       filter: drop-shadow(0 2px 12px #aaa8);
       user-select: none;
       z-index: 10;
-      transition: transform 0.2s;
+      left: 0; top: 0;
+      transition: transform 0.18s;
       pointer-events: none;
     }
     .title {
@@ -82,42 +79,42 @@
 </head>
 <body>
   <div class="sky">
-    <!-- السحب بالإيموجي -->
+    <!-- السحب -->
     <span class="cloud cloud1">☁️</span>
     <span class="cloud cloud2">☁️</span>
     <span class="cloud cloud3">☁️</span>
     <span class="cloud cloud4">☁️</span>
-    <!-- الصور (تظهر واحدة واحدة) -->
-    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/9df0fd38-9a10-40ff-a066-e32b1c985096/Picsart_24-11-09_21-49-43-460.jpg"
-         class="scene-img" id="img0">
-    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/1642e0d8-0bf4-4146-852a-b1ddf7a785e5/Picsart_25-05-02_19-10-45-521.jpg"
-         class="scene-img" id="img1">
-    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/7b95f053-a18f-4e16-b7d4-da35a3f5f845/received_1436706623392660.jpg"
-         class="scene-img" id="img2">
-    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/978bd8f9-475a-4d89-a0f9-856477bae87a/png-clipart-cartoon-hand-painted-paper-plane-cartoon-paper-hand-painted-paper.jpg"
-         class="scene-img" id="img3">
+    <!-- الصور (مرتبة أفقيًا) -->
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/978bd8f9-475a-4d89-a0f9-856477bae87a/png-clipart-cartoon-hand-painted-paper-plane-cartoon-paper-hand-painted-paper.jpg" class="scene-img" id="img0">
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/9df0fd38-9a10-40ff-a066-e32b1c985096/Picsart_24-11-09_21-49-43-460.jpg" class="scene-img" id="img1">
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/1642e0d8-0bf4-4146-852a-b1ddf7a785e5/Picsart_25-05-02_19-10-45-521.jpg" class="scene-img" id="img2">
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/7b95f053-a18f-4e16-b7d4-da35a3f5f845/received_1436706623392660.jpg" class="scene-img" id="img3">
     <!-- الطائرة الورقية -->
-    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/978bd8f9-475a-4d89-a0f9-856477bae87a/png-clipart-cartoon-hand-painted-paper-plane-cartoon-paper-hand-painted-paper.jpg"
-         class="kite-img" id="kite">
-    <h1 class="title">طائرة ورقية تطير بين الصور!</h1>
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/978bd8f9-475a-4d89-a0f9-856477bae87a/png-clipart-cartoon-hand-painted-paper-plane-cartoon-paper-hand-painted-paper.jpg" class="kite-img" id="kite">
+    <h1 class="title">حرك الطائرة الورقية يمينًا ويسارًا باللمس أو الماوس!</h1>
   </div>
   <script>
-    // أماكن الصور (حسب الفيديو تقريباً - يمكنك تعديلها بدقة حسب رغبتك)
-    const imgPositions = [
-      {x: window.innerWidth*0.12, y: window.innerHeight*0.45},
-      {x: window.innerWidth*0.36, y: window.innerHeight*0.18},
-      {x: window.innerWidth*0.65, y: window.innerHeight*0.35},
-      {x: window.innerWidth*0.52, y: window.innerHeight*0.70}
-    ];
-    // عناصر الصور
+    // ترتيب الصور أفقيًا في منتصف الشاشة
+    function getImgPositions() {
+      const midY = window.innerHeight * 0.5 - 90;
+      const total = 4;
+      const gap = window.innerWidth / (total + 1);
+      return [
+        {x: gap*1 - 90, y: midY},
+        {x: gap*2 - 90, y: midY},
+        {x: gap*3 - 90, y: midY},
+        {x: gap*4 - 90, y: midY}
+      ];
+    }
+    let imgPositions = getImgPositions();
     const imgs = [
       document.getElementById('img0'),
       document.getElementById('img1'),
       document.getElementById('img2'),
       document.getElementById('img3')
     ];
-    // ضع كل صورة في مكانها
     function placeImages() {
+      imgPositions = getImgPositions();
       imgs.forEach((img, i) => {
         img.style.left = imgPositions[i].x + 'px';
         img.style.top = imgPositions[i].y + 'px';
@@ -125,24 +122,29 @@
     }
     placeImages();
 
-    // نقاط المسار (منتصف كل صورة)
-    function getPoints() {
-      return imgPositions.map(pos => ({
-        x: pos.x + 85,
-        y: pos.y + 85
-      }));
+    // نقاط المسار (منتصف الشاشة بشكل أفقي)
+    function getPathPoints() {
+      const y = window.innerHeight * 0.5;
+      const total = 4;
+      const gap = window.innerWidth / (total + 1);
+      return [
+        {x: gap*1, y: y},
+        {x: gap*2, y: y},
+        {x: gap*3, y: y},
+        {x: gap*4, y: y}
+      ];
     }
-    let points = getPoints();
+    let pathPoints = getPathPoints();
 
     // الطائرة الورقية
     const kite = document.getElementById('kite');
     let seg = 0; // الفاصل الحالي
-    let t = 0;   // نسبة التقدم بين نقطتين
-    let speed = 0.003; // سرعة الطائرة
-    let paused = false;
-    let currentImg = 0;
+    let t = 0;
+    let speed = 0.012; // سرعة وانسيابية عالية
+    let moving = false;
+    let moveDirection = null;
 
-    // منحنى بيزير بسيط (لنعومة الحركة)
+    // منحنى بيزير أفقي (مسار عرضي ناعم)
     function bezier(p0, p1, p2, t) {
       const x = (1-t)*(1-t)*p0.x + 2*(1-t)*t*p1.x + t*t*p2.x;
       const y = (1-t)*(1-t)*p0.y + 2*(1-t)*t*p1.y + t*t*p2.y;
@@ -158,92 +160,77 @@
     showImage(0);
 
     function animateKite() {
-      if (!paused) {
-        // المسار بين كل نقطتين مع نقطة تحكم متعرجة
-        points = getPoints();
-        const p0 = points[seg];
-        const p2 = points[(seg+1)%points.length];
+      if (moving && moveDirection) {
+        pathPoints = getPathPoints();
+        const p0 = pathPoints[seg];
+        const p2 = pathPoints[(seg+1)%pathPoints.length];
+        // نقطة تحكم في الوسط (لمنحنى أفقي خفيف)
         const ctrl = {
-          x: (p0.x + p2.x)/2 + ((seg%2===0)?80:-80),
-          y: (p0.y + p2.y)/2 - 120
+          x: (p0.x + p2.x)/2,
+          y: p0.y + ((seg%2===0)?-70:70)
         };
+        const delta = moveDirection === 'forward' ? speed : -speed;
+        t += delta;
+        if (t > 1) {
+          t = 0;
+          seg = (seg+1)%pathPoints.length;
+        } else if (t < 0) {
+          seg = (seg-1+pathPoints.length)%pathPoints.length;
+          t = 1;
+        }
         const pos = bezier(p0, ctrl, p2, t);
-
-        // تحديث موقع الطائرة
-        kite.style.left = (pos.x - 55) + 'px';
-        kite.style.top = (pos.y - 55) + 'px';
+        kite.style.left = (pos.x - 60) + 'px';
+        kite.style.top = (pos.y - 60) + 'px';
 
         // تدوير اتجاه الطائرة حسب المسار
-        const next = bezier(p0, ctrl, p2, t+0.01);
+        const next = bezier(p0, ctrl, p2, t + 0.01 * (moveDirection === 'forward' ? 1 : -1));
         const angle = Math.atan2(next.y - pos.y, next.x - pos.x) * 180 / Math.PI;
         kite.style.transform = `rotate(${angle}deg)`;
 
         // إظهار الصورة الحالية فقط
         if (t < 0.5) showImage(seg);
         else showImage((seg+1)%imgs.length);
-
-        t += speed;
-        if (t >= 1) {
-          t = 0;
-          seg = (seg+1)%points.length;
-        }
       }
       requestAnimationFrame(animateKite);
     }
 
-    // التحكم باللمس أو الماوس (يمين/يسار لإيقاف أو استكمال الحركة)
-    function handleMove(direction) {
-      paused = true;
-      let moveStep = 7;
-      let move = () => {
-        if (!paused) return;
-        let left = parseFloat(kite.style.left || '0');
-        if (direction === 'forward') {
-          kite.style.left = (left + moveStep) + 'px';
-        } else if (direction === 'backward') {
-          kite.style.left = (left - moveStep) + 'px';
-        }
-        requestAnimationFrame(move);
-      };
-      move();
+    // تحريك الطائرة باللمس أو الماوس (يمين/يسار)
+    function startMove(direction) {
+      moveDirection = direction;
+      moving = true;
     }
-    function resumeAuto() {
-      paused = false;
+    function stopMove() {
+      moving = false;
+      moveDirection = null;
     }
 
-    // لمس الشاشة
     document.addEventListener('touchstart', function(e) {
       if (e.touches.length === 1) {
         const x = e.touches[0].clientX;
         if (x > window.innerWidth / 2) {
-          handleMove('forward');
+          startMove('forward');
         } else {
-          handleMove('backward');
+          startMove('backward');
         }
       }
     });
-    document.addEventListener('touchend', resumeAuto);
+    document.addEventListener('touchend', stopMove);
 
-    // الماوس (اختياري)
     document.addEventListener('mousedown', function(e) {
       if (e.button === 0) {
         if (e.clientX > window.innerWidth / 2) {
-          handleMove('forward');
+          startMove('forward');
         } else {
-          handleMove('backward');
+          startMove('backward');
         }
       }
     });
-    document.addEventListener('mouseup', resumeAuto);
+    document.addEventListener('mouseup', stopMove);
 
-    // إعادة ضبط أماكن الصور عند تغيير حجم الشاشة
+    // إعادة ضبط أماكن الصور والمسار عند تغيير حجم الشاشة
     window.addEventListener('resize', () => {
-      imgPositions[0] = {x: window.innerWidth*0.12, y: window.innerHeight*0.45};
-      imgPositions[1] = {x: window.innerWidth*0.36, y: window.innerHeight*0.18};
-      imgPositions[2] = {x: window.innerWidth*0.65, y: window.innerHeight*0.35};
-      imgPositions[3] = {x: window.innerWidth*0.52, y: window.innerHeight*0.70};
       placeImages();
-      points = getPoints();
+      pathPoints = getPathPoints();
     });
 
     animateKite();
