@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>سحب وطائرة ورقية متحركة</title>
+  <title>مسار الطائرة الورقية بين الصور</title>
   <style>
     body, html {
       height: 100%;
@@ -18,71 +18,31 @@
       height: 100vh;
       overflow: hidden;
     }
-    /* السحب */
-    .cloud {
+    .scene-img {
       position: absolute;
-      opacity: 0.85;
-      user-select: none;
-      pointer-events: none;
-      z-index: 2;
-      font-size: 64px;
-      filter: drop-shadow(0 2px 8px #fff8);
-      animation-timing-function: linear;
-    }
-    .cloud1 {
-      top: 60px; left: 10%;
-      animation: cloudMove1 30s linear infinite;
-    }
-    .cloud2 {
-      top: 140px; left: 40%;
-      animation: cloudMove2 40s linear infinite reverse;
-    }
-    .cloud3 {
-      top: 220px; left: 70%;
-      animation: cloudMove3 35s linear infinite;
-    }
-    @keyframes cloudMove1 {
-      0% { left: -20%; }
-      100% { left: 110%; }
-    }
-    @keyframes cloudMove2 {
-      0% { left: -10%; }
-      100% { left: 105%; }
-    }
-    @keyframes cloudMove3 {
-      0% { left: -20%; }
-      100% { left: 120%; }
-    }
-    /* إطار الطائرة الورقية */
-    .kite-frame {
-      position: absolute;
-      left: 40vw;
-      top: 50vh;
       width: 180px;
       height: 180px;
-      background: rgba(255,255,255,0.65);
-      border: 4px solid #2d2d2d;
-      border-radius: 32px;
-      box-shadow: 0 8px 32px #0002;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      transition: box-shadow 0.2s;
-      touch-action: none;
+      object-fit: cover;
+      border-radius: 22px;
+      border: 4px solid #fff;
+      box-shadow: 0 4px 24px #0003;
+      z-index: 2;
+      background: #eee;
     }
+    /* صورة الطائرة الورقية */
     .kite-img {
-      width: 130px;
+      position: absolute;
+      width: 110px;
       height: auto;
-      display: block;
       filter: drop-shadow(0 2px 12px #aaa8);
       user-select: none;
-      background: transparent;
+      z-index: 10;
+      transition: transform 0.2s;
       pointer-events: none;
     }
     .title {
       position: absolute;
-      bottom: 40px;
+      bottom: 20px;
       width: 100%;
       text-align: center;
       font-size: 2em;
@@ -94,66 +54,73 @@
 </head>
 <body>
   <div class="sky">
-    <!-- السحب (إيموجي كرتوني للتحريك) -->
-    <span class="cloud cloud1">☁️</span>
-    <span class="cloud cloud2">☁️</span>
-    <span class="cloud cloud3">☁️</span>
-    <!-- الطائرة الورقية داخل الإطار -->
-    <div class="kite-frame" id="kite-frame">
-      <img
-        src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/978bd8f9-475a-4d89-a0f9-856477bae87a/png-clipart-cartoon-hand-painted-paper-plane-cartoon-paper-hand-painted-paper.jpg"
-        alt="طائرة ورقية"
-        class="kite-img"
-      >
-    </div>
-    <h1 class="title">حرك الطائرة الورقية باللمس أو بالماوس!</h1>
+    <!-- الصور التي أرسلتها -->
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/9df0fd38-9a10-40ff-a066-e32b1c985096/Picsart_24-11-09_21-49-43-460.jpg"
+         class="scene-img" style="left:10vw;top:20vh;">
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/1642e0d8-0bf4-4146-852a-b1ddf7a785e5/Picsart_25-05-02_19-10-45-521.jpg"
+         class="scene-img" style="left:60vw;top:15vh;">
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/7b95f053-a18f-4e16-b7d4-da35a3f5f845/received_1436706623392660.jpg"
+         class="scene-img" style="left:30vw;top:60vh;">
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/978bd8f9-475a-4d89-a0f9-856477bae87a/png-clipart-cartoon-hand-painted-paper-plane-cartoon-paper-hand-painted-paper.jpg"
+         class="scene-img" style="left:75vw;top:60vh;">
+    <!-- صورة الطائرة الورقية -->
+    <img src="https://pplx-res.cloudinary.com/image/private/user_uploads/71429067/978bd8f9-475a-4d89-a0f9-856477bae87a/png-clipart-cartoon-hand-painted-paper-plane-cartoon-paper-hand-painted-paper.jpg"
+         class="kite-img" id="kite">
+    <h1 class="title">طائرة ورقية تطير بين الصور!</h1>
   </div>
   <script>
-    // إعداد موقع الطائرة الافتراضي
-    const kiteFrame = document.getElementById('kite-frame');
-    let kiteLeft = window.innerWidth * 0.4;
-    let kiteTop = window.innerHeight * 0.5;
+    // نقاط الصور (منتصف كل صورة)
+    const points = [
+      {x: window.innerWidth*0.10 + 90, y: window.innerHeight*0.20 + 90},
+      {x: window.innerWidth*0.60 + 90, y: window.innerHeight*0.15 + 90},
+      {x: window.innerWidth*0.30 + 90, y: window.innerHeight*0.60 + 90},
+      {x: window.innerWidth*0.75 + 90, y: window.innerHeight*0.60 + 90}
+    ];
+    const kite = document.getElementById('kite');
+    let seg = 0; // الفاصل الحالي
+    let t = 0;   // نسبة التقدم بين نقطتين
+    let speed = 0.003; // سرعة الطائرة (كلما زادت القيمة زادت السرعة)
 
-    function updateKite() {
-      kiteFrame.style.left = kiteLeft + 'px';
-      kiteFrame.style.top = kiteTop + 'px';
+    // دالة للحصول على نقطة بين نقطتين (مسار منحني بسيط)
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
     }
 
-    function moveKite(direction) {
-      const step = 40; // مقدار التحرك بالبكسل
-      if (direction === 'forward') {
-        kiteLeft = Math.min(kiteLeft + step, window.innerWidth - kiteFrame.offsetWidth);
-      } else if (direction === 'backward') {
-        kiteLeft = Math.max(kiteLeft - step, 0);
+    function animateKite() {
+      const p1 = points[seg];
+      const p2 = points[(seg+1)%points.length];
+
+      // منحنى بسيط (يمكنك تعديله ليصبح أكثر تعرجًا)
+      const cx = lerp(p1.x, p2.x, t) + Math.sin(t * Math.PI) * 80 * ((seg%2)*2-1);
+      const cy = lerp(p1.y, p2.y, t) - Math.cos(t * Math.PI) * 50;
+
+      // تحديث موقع الطائرة
+      kite.style.left = (cx - 55) + 'px';
+      kite.style.top = (cy - 55) + 'px';
+
+      // تدوير اتجاه الطائرة حسب المسار
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+      const angle = Math.atan2(cy - p1.y, cx - p1.x) * 180 / Math.PI;
+      kite.style.transform = `rotate(${angle}deg)`;
+
+      t += speed;
+      if (t >= 1) {
+        t = 0;
+        seg = (seg+1)%points.length;
       }
-      updateKite();
+      requestAnimationFrame(animateKite);
     }
 
-    // دعم اللمس
-    document.addEventListener('touchstart', function(e) {
-      if (e.touches.length === 1) {
-        const x = e.touches[0].clientX;
-        if (x > window.innerWidth / 2) {
-          moveKite('forward');
-        } else {
-          moveKite('backward');
-        }
-      }
+    // إعادة ضبط النقاط عند تغيير حجم الشاشة
+    window.addEventListener('resize', () => {
+      points[0] = {x: window.innerWidth*0.10 + 90, y: window.innerHeight*0.20 + 90};
+      points[1] = {x: window.innerWidth*0.60 + 90, y: window.innerHeight*0.15 + 90};
+      points[2] = {x: window.innerWidth*0.30 + 90, y: window.innerHeight*0.60 + 90};
+      points[3] = {x: window.innerWidth*0.75 + 90, y: window.innerHeight*0.60 + 90};
     });
 
-    // دعم الماوس (اختياري)
-    document.addEventListener('mousedown', function(e) {
-      if (e.button === 0) { // زر الماوس الأيسر
-        if (e.clientX > window.innerWidth / 2) {
-          moveKite('forward');
-        } else {
-          moveKite('backward');
-        }
-      }
-    });
-
-    window.addEventListener('resize', updateKite);
-    window.onload = updateKite;
+    animateKite();
   </script>
 </body>
 </html>
